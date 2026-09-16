@@ -74,6 +74,13 @@ canvas{display:block}
   text-align:center;line-height:1.7}
 #err{color:#fbbf24;font-family:var(--mono);font-size:.78rem;max-width:420px;
   text-align:center;line-height:1.7;display:none}
+
+/* embed mode: the same page, framed inside the portfolio */
+body.embed #bar{display:none}
+body.embed #panel{top:12px;left:12px;max-height:calc(100% - 24px)}
+body.embed #hint{display:none}
+body.embed #load .note{font-size:.66rem}
+@media(max-width:860px){body.embed #panel{display:none}}
 </style>
 </head>
 <body>
@@ -115,6 +122,8 @@ import { GLTFLoader }    from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader }   from 'three/addons/loaders/DRACOLoader.js';
 
 const MODEL = './top.glb';
+const EMBED = new URLSearchParams(location.search).has('embed');
+if (EMBED) document.body.classList.add('embed');
 const loadEl = document.getElementById('load');
 const loadLbl = document.getElementById('loadLbl');
 const fillEl = document.getElementById('fill');
