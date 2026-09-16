@@ -169,6 +169,30 @@ section{padding:88px 0;position:relative}
 .skill-col li{color:var(--ink-2);font-size:.94rem;padding:7px 0;display:flex;gap:11px;align-items:baseline}
 .skill-col li::before{content:"▸";color:var(--mint-dim);font-size:.75rem}
 
+/* ---------- EMBEDDED LAYOUT VIEWER ---------- */
+.viewer{position:relative;border:1px solid var(--sub-3);border-radius:var(--r);
+  background:var(--sub-2);overflow:hidden;aspect-ratio:16/9}
+@media(max-width:820px){.viewer{aspect-ratio:4/3}}
+.viewer iframe{position:absolute;inset:0;width:100%;height:100%;border:0;
+  opacity:0;transition:opacity .6s}
+.viewer iframe.in{opacity:1}
+.viewer-poster{position:absolute;inset:0;z-index:2;display:flex;
+  align-items:center;justify-content:center;background:var(--sub-2);
+  transition:opacity .5s}
+.viewer-poster.gone{opacity:0;pointer-events:none}
+.vp-inner{display:flex;flex-direction:column;align-items:center;gap:14px;
+  text-align:center;padding:24px}
+.vp-title{font-size:1.15rem;font-weight:600}
+.vp-note{font-family:var(--mono);font-size:.74rem;color:var(--ink-3);line-height:1.7}
+.viewer-bar{position:absolute;left:0;right:0;bottom:0;z-index:3;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px 14px;background:linear-gradient(transparent,rgba(10,14,13,.85));
+  font-family:var(--mono);font-size:.72rem;color:var(--ink-3);pointer-events:none}
+.viewer-bar a{pointer-events:auto;color:var(--ink-2);border:1px solid var(--sub-3);
+  border-radius:var(--r);padding:6px 12px;background:rgba(10,14,13,.6);transition:.2s}
+.viewer-bar a:hover{border-color:var(--mint);color:var(--mint)}
+@media(max-width:560px){.viewer-bar span{display:none}}
+
 /* ---------- CREDENTIALS ---------- */
 .cred-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 @media(max-width:820px){.cred-grid{grid-template-columns:1fr}}
@@ -218,6 +242,7 @@ footer b{color:var(--mint)}
     <div class="nav-links">
       <a href="#about">about</a>
       <a href="#work">work</a>
+      <a href="#silicon">silicon</a>
       <a href="#stack">stack</a>
       <a href="#credentials">credentials</a>
       <a href="#contact">contact</a>
@@ -311,7 +336,7 @@ footer b{color:var(--mint)}
         <h3>RVBL-2 — RV32I Multicycle Processor</h3>
         <p>A complete RV32I_Zmmul_Xvbcrc processor written in Verilog-2001: four-state control FSM, load-store unit, and a multiply unit. On top of base RV32I I implemented the <b>Zmmul</b> multiply extension and <b>Xvbcrc</b>, a custom CRC instruction extension in hardware. Verified with self-checking testbenches, then taken through synthesis on OpenLane with the sky130 PDK. Built for Phase 2 of the VombrenLabs ChampionCHIP competition.</p>
         <div class="chips"><span class="chip">Verilog-2001</span><span class="chip">RV32I</span><span class="chip">FSM</span><span class="chip">testbench</span><span class="chip">OpenLane</span><span class="chip">sky130</span></div>
-        <a class="card-link" href="./layout.html">Explore the chip layout →</a>
+        <a class="card-link" href="#silicon">See the layout below →</a>
       </div>
 
       <div class="card reveal">
@@ -389,11 +414,38 @@ footer b{color:var(--mint)}
 
 <div class="wrap"><div class="divider"></div></div>
 
+<!-- SILICON -->
+<section id="silicon">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="ref">§03</span>
+      <h2>The same core, as laid out in silicon</h2>
+      <span class="sec-idx">sky130 · 274,009 cells</span>
+    </div>
+    <div class="viewer" id="viewer">
+      <iframe id="vframe" title="RVBL-2 sky130 GDSII layout viewer"></iframe>
+      <div class="viewer-poster" id="vposter">
+        <div class="vp-inner">
+          <span class="vp-title">Interactive GDSII layout</span>
+          <span class="vp-note">11&nbsp;MB · WebGL · 16 mask layers<br>drag to orbit, scroll to zoom, toggle layers</span>
+          <button class="btn btn-p" id="vload" type="button">Load the layout</button>
+        </div>
+      </div>
+      <div class="viewer-bar">
+        <span>RVBL-2 · RV32I_Zmmul_Xvbcrc · sky130 · OpenLane</span>
+        <a href="./layout.html" target="_blank" rel="noopener">open full screen ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="divider"></div></div>
+
 <!-- STACK -->
 <section id="stack">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="ref">§03</span>
+      <span class="ref">§04</span>
       <h2>Stack &amp; fundamentals</h2>
     </div>
     <div class="skill-grid">
@@ -443,16 +495,28 @@ footer b{color:var(--mint)}
 <section id="credentials">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="ref">§04</span>
+      <span class="ref">§05</span>
       <h2>Credentials</h2>
-      <span class="sec-idx">verifiable · chipinventor.com</span>
+      <span class="sec-idx">RTL → verification → GDSII → FPGA</span>
     </div>
     <div class="cred-grid">
       <div class="cred reveal">
         <div class="issuer"><span>ChipInventor</span><span>20 hours · Sep 2026</span></div>
-        <h3>Pioneer Learning Journey</h3>
-        <p>Designing a simple RISC-V processor step by step — logic and memory through to control and validation.</p>
+        <h3>Pioneer — RISC-V Processor Design</h3>
+        <p>Designing a RISC-V processor step by step, from logic and memory through to control and validation.</p>
         <a class="verify" href="https://www.chipinventor.com/validate-certificate?guid=b276996f-c81b-44ac-9238-b5b0ed8f7287" target="_blank" rel="noopener">Verify certificate →</a>
+      </div>
+      <div class="cred reveal">
+        <div class="issuer"><span>ChipInventor</span><span>Jul 2026</span></div>
+        <h3>Designer — RTL Design Verification</h3>
+        <p>Verification methodology for digital IC design: building testbenches that prove RTL does what the spec says.</p>
+        <a class="verify" href="https://www.chipinventor.com/validate-certificate?guid=541cdfb5-ce5a-425c-a6ec-d7d97e458c89" target="_blank" rel="noopener">Verify certificate →</a>
+      </div>
+      <div class="cred reveal">
+        <div class="issuer"><span>ChipInventor</span><span>Jul 2026</span></div>
+        <h3>Innovator — Synthesis to GDSII</h3>
+        <p>The back end of the flow: taking synthesised RTL through place and route to a manufacturable GDSII layout.</p>
+        <a class="verify" href="https://www.chipinventor.com/validate-certificate?guid=d023e15c-fa6b-4222-abe6-c66885f8633c" target="_blank" rel="noopener">Verify certificate →</a>
       </div>
       <div class="cred reveal">
         <div class="issuer"><span>ChipInventor</span><span>10 hours · Sep 2026</span></div>
@@ -469,7 +533,7 @@ footer b{color:var(--mint)}
 <!-- CONTACT -->
 <section class="contact" id="contact">
   <div class="wrap reveal">
-    <span class="ref" style="display:block;margin-bottom:14px">§05</span>
+    <span class="ref" style="display:block;margin-bottom:14px">§06</span>
     <h2>Looking for an <span class="g">engineering intern</span> who already builds?</h2>
     <p>I'm actively seeking an engineering internship in Malaysia — RTL design, design verification, or embedded and hardware work more broadly. If you're hiring, or just want to talk shop, the links are below.</p>
     <div class="links-row">
@@ -491,6 +555,41 @@ const nav=document.getElementById('nav');
 addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>20));
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
 document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%4*60)+'ms';io.observe(el)});
+
+/* ---- embedded layout viewer -------------------------------------------
+   The model is 11 MB, so it never loads with the page. On a wide screen
+   and a connection that looks up to it, it starts once the section
+   scrolls into view; otherwise it waits for a deliberate click.        */
+(function(){
+  const frame  = document.getElementById('vframe');
+  const poster = document.getElementById('vposter');
+  const btn    = document.getElementById('vload');
+  if(!frame||!poster||!btn) return;
+
+  let started=false;
+  function start(){
+    if(started) return;
+    started=true;
+    btn.textContent='loading…';
+    frame.src='./layout.html?embed=1';
+    frame.addEventListener('load',()=>{
+      frame.classList.add('in');
+      poster.classList.add('gone');
+    },{once:true});
+  }
+  btn.addEventListener('click',start);
+
+  const conn=navigator.connection||{};
+  const slow=conn.saveData===true||/^(slow-)?2g$/.test(conn.effectiveType||'');
+  const autoOk=innerWidth>=860&&!slow&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if(autoOk){
+    const vo=new IntersectionObserver(es=>es.forEach(e=>{
+      if(e.isIntersecting){vo.disconnect();start();}
+    }),{rootMargin:'200px'});
+    vo.observe(document.getElementById('viewer'));
+  }
+})();
 </script>
 </body>
 </html>
