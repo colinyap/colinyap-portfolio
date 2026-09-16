@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RVBL-2 Layout — Colin Yap</title>
+<meta name="description" content="Interactive sky130 GDSII layout of RVBL-2, a RISC-V RV32I multicycle processor.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sub:#0a0e0d; --sub-2:#111917; --sub-3:#182422;
+  --mint:#5eead4; --mint-dim:#2dd4bf; --mint-deep:#134e4a;
+  --ink:#e8f2ef; --ink-2:#8ba39d; --ink-3:#546861;
+  --display:'Space Grotesk',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --r:2px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--sub);color:var(--ink);font-family:var(--display);
+  overflow:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+canvas{display:block}
+::selection{background:var(--mint);color:var(--sub)}
+:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+
+/* top bar */
+#bar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;
+  align-items:center;justify-content:space-between;gap:16px;
+  padding:14px 20px;background:rgba(10,14,13,.74);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--sub-3)}
+#bar .t{font-family:var(--mono);font-size:.9rem;font-weight:700}
+#bar .t b{color:var(--mint)}
+#bar .s{font-family:var(--mono);font-size:.74rem;color:var(--ink-3)}
+#bar a.back{font-family:var(--mono);font-size:.78rem;color:var(--ink-2);
+  border:1px solid var(--sub-3);border-radius:var(--r);padding:7px 13px;transition:.2s}
+#bar a.back:hover{border-color:var(--mint);color:var(--mint)}
+@media(max-width:700px){#bar .s{display:none}}
+
+/* layer panel */
+#panel{position:fixed;top:64px;left:20px;z-index:20;width:210px;
+  background:rgba(17,25,23,.92);backdrop-filter:blur(12px);
+  border:1px solid var(--sub-3);border-radius:var(--r);
+  max-height:calc(100vh - 92px);display:flex;flex-direction:column}
+#panel h4{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--mint);padding:14px 16px 10px;
+  border-bottom:1px solid var(--sub-3);display:flex;justify-content:space-between}
+#panel h4 button{background:none;border:none;color:var(--ink-3);cursor:pointer;
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:none}
+#panel h4 button:hover{color:var(--mint)}
+#layers{overflow-y:auto;padding:8px 0}
+#layers label{display:flex;align-items:center;gap:10px;padding:5px 16px;
+  font-family:var(--mono);font-size:.78rem;color:var(--ink-2);cursor:pointer}
+#layers label:hover{color:var(--ink);background:rgba(94,234,212,.05)}
+#layers input{accent-color:var(--mint);cursor:pointer;flex:none}
+#layers .sw{width:10px;height:10px;border-radius:1px;flex:none;
+  border:1px solid rgba(255,255,255,.18)}
+#layers .ct{margin-left:auto;font-size:.68rem;color:var(--ink-3)}
+#hint{padding:10px 16px 13px;border-top:1px solid var(--sub-3);
+  font-family:var(--mono);font-size:.67rem;color:var(--ink-3);line-height:1.6}
+@media(max-width:700px){#panel{display:none}}
+
+/* loading */
+#load{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:18px;background:var(--sub);
+  transition:opacity .5s}
+#load.done{opacity:0;pointer-events:none}
+#load .lbl{font-family:var(--mono);font-size:.82rem;color:var(--ink-2)}
+#track{width:260px;height:2px;background:var(--sub-3);border-radius:2px;overflow:hidden}
+#fill{height:100%;width:0;background:var(--mint);transition:width .25s}
+#load .note{font-family:var(--mono);font-size:.7rem;color:var(--ink-3);max-width:320px;
+  text-align:center;line-height:1.7}
+#err{color:#fbbf24;font-family:var(--mono);font-size:.78rem;max-width:420px;
+  text-align:center;line-height:1.7;display:none}
+</style>
+</head>
+<body>
+
+<div id="bar">
+  <div>
+    <div class="t">RVBL<b>_</b>2 · sky130 layout</div>
+  </div>
+  <div class="s" id="stats">—</div>
+  <a class="back" href="./index.html">← portfolio</a>
+</div>
+
+<div id="panel">
+  <h4><span>Layers</span><button id="toggleAll">none</button></h4>
+  <div id="layers"></div>
+  <div id="hint">drag · orbit<br>scroll · zoom<br>right-drag · pan<br>press R · reset view</div>
+</div>
+
+<div id="load">
+  <div class="lbl" id="loadLbl">loading layout…</div>
+  <div id="track"><div id="fill"></div></div>
+  <div class="note">11 MB · 274,009 instanced cells across 16 mask layers</div>
+  <div id="err"></div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader }    from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader }   from 'three/addons/loaders/DRACOLoader.js';
+
+const MODEL = './top.glb';
+const loadEl = document.getElementById('load');
+const loadLbl = document.getElementById('loadLbl');
+const fillEl = document.getElementById('fill');
+const errEl  = document.getElementById('err');
+const statsEl = document.getElementById('stats');
+const layersEl = document.getElementById('layers');
+
+/* ---------- renderer: on-demand rendering, capped DPR, no shadows ---------- */
+const renderer = new THREE.WebGLRenderer({
+  antialias: true, powerPreference: 'high-performance', stencil: false
+});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0e0d);
+
+const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.5, 200000);
+scene.add(new THREE.HemisphereLight(0xdfe8ff, 0x1a2a28, 1.0));
+const key  = new THREE.DirectionalLight(0xfff4d6, 0.85); key.position.set(400, 700, -300);
+const fill = new THREE.DirectionalLight(0x9fd8ff, 0.45); fill.position.set(-350, 500, 400);
+scene.add(key, fill);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.09;
+
+let needsRender = true;
+const invalidate = () => { needsRender = true; };
+controls.addEventListener('change', invalidate);
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+  invalidate();
+});
+(function loop(){
+  requestAnimationFrame(loop);
+  if (controls.enableDamping) controls.update();
+  if (needsRender) { renderer.render(scene, camera); needsRender = false; }
+})();
+
+/* ---------- load ---------- */
+const draco = new DRACOLoader()
+  .setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/gltf/');
+const loader = new GLTFLoader().setDRACOLoader(draco);
+
+let home = null;
+
+loader.load(MODEL, onLoaded, onProgress, onError);
+
+function onProgress(xhr){
+  if (xhr.total){
+    const p = xhr.loaded / xhr.total;
+    fillEl.style.width = (p * 100).toFixed(0) + '%';
+    loadLbl.textContent = 'downloading ' + (p * 100).toFixed(0) + '%';
+  } else {
+    loadLbl.textContent = 'downloading ' + (xhr.loaded / 1e6).toFixed(1) + ' MB';
+  }
+}
+
+function onError(e){
+  console.error(e);
+  loadLbl.textContent = 'could not load the layout';
+  fillEl.style.width = '100%';
+  fillEl.style.background = '#fbbf24';
+  errEl.style.display = 'block';
+  errEl.textContent = 'top.glb did not load. If you are opening this file directly '
+    + 'from disk, browsers block the fetch — serve the folder over http instead '
+    + '(for example: python3 -m http.server).';
+}
+
+function onLoaded(gltf){
+  loadLbl.textContent = 'decoding geometry…';
+  fillEl.style.width = '100%';
+
+  const root = gltf.scene;
+  root.rotation.x = -Math.PI / 2;      // GDS is XY-planar; stand it up
+  root.updateMatrixWorld(true);
+  scene.add(root);
+
+  // group instanced meshes by the mask layer their material names
+  const layers = new Map();
+  let instTotal = 0, triTotal = 0;
+  root.traverse(o => {
+    if (!o.isMesh) return;
+    const name = (o.material && o.material.name) || 'unnamed';
+    const n = o.isInstancedMesh ? o.count : 1;
+    instTotal += n;
+    const g = o.geometry.index;
+    if (g) triTotal += (g.count / 3) * n;
+    if (o.material) {
+      o.material.metalness = 0.15;
+      o.material.roughness = 0.65;
+    }
+    if (!layers.has(name)) layers.set(name, { objs: [], inst: 0, color: o.material.color });
+    const L = layers.get(name);
+    L.objs.push(o);
+    L.inst += n;
+  });
+
+  buildLayerList(layers);
+  fitView(root);
+
+  statsEl.textContent = layers.size + ' layers · '
+    + instTotal.toLocaleString() + ' instances · '
+    + Math.round(triTotal / 1e6) + 'M triangles';
+
+  loadEl.classList.add('done');
+  invalidate();
+}
+
+/* ---------- layer toggles ---------- */
+function buildLayerList(layers){
+  // draw order in a real stack-up: substrate at the bottom, met5 on top
+  const order = ['substrate','nwell','diff','poly','licon','li1','mcon','met1',
+                 'via','met2','via2','met3','via3','met4','via4','met5'];
+  const names = [...layers.keys()].sort(
+    (a, b) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99));
+
+  for (const name of names){
+    const L = layers.get(name);
+    const row = document.createElement('label');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.checked = true;
+    cb.addEventListener('change', () => {
+      L.objs.forEach(o => o.visible = cb.checked);
+      invalidate();
+    });
+    const sw = document.createElement('span');
+    sw.className = 'sw';
+    sw.style.background = '#' + L.color.getHexString();
+    const txt = document.createElement('span');
+    txt.textContent = name;
+    const ct = document.createElement('span');
+    ct.className = 'ct';
+    ct.textContent = L.inst.toLocaleString();
+    row.append(cb, sw, txt, ct);
+    layersEl.appendChild(row);
+  }
+
+  let allOn = true;
+  document.getElementById('toggleAll').addEventListener('click', e => {
+    allOn = !allOn;
+    layersEl.querySelectorAll('input').forEach(i => {
+      i.checked = allOn;
+      i.dispatchEvent(new Event('change'));
+    });
+    e.target.textContent = allOn ? 'none' : 'all';
+  });
+}
+
+/* ---------- framing ---------- */
+function fitView(root){
+  const box = new THREE.Box3().setFromObject(root);
+  const size = box.getSize(new THREE.Vector3());
+  const c = box.getCenter(new THREE.Vector3());
+  const radius = Math.max(size.x, size.y, size.z) * 0.5 || 1;
+  const dist = radius / Math.sin((camera.fov * Math.PI / 180) / 2) * 1.15;
+
+  home = {
+    pos: new THREE.Vector3(c.x + dist * 0.55, c.y + dist * 0.62, c.z + dist * 0.55),
+    target: c.clone()
+  };
+  camera.near = Math.max(0.2, dist / 4000);
+  camera.far  = dist * 24;
+  resetView();
+}
+
+function resetView(){
+  if (!home) return;
+  camera.position.copy(home.pos);
+  camera.updateProjectionMatrix();
+  controls.target.copy(home.target);
+  controls.update();
+  invalidate();
+}
+
+addEventListener('keydown', e => {
+  if (e.key === 'r' || e.key === 'R') resetView();
+});
+</script>
+</body>
+</html>
