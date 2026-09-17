@@ -75,6 +75,13 @@ canvas{display:block}
 #err{color:#f2c94c;font-family:var(--mono);font-size:.78rem;max-width:420px;
   text-align:center;line-height:1.7;display:none}
 
+#mode{position:absolute;left:12px;bottom:12px;z-index:25;
+  font-family:var(--mono);font-size:11px;letter-spacing:.04em;
+  color:var(--ink-2);background:rgba(27,29,40,.82);border:1px solid var(--sub-3);
+  border-radius:2px;padding:5px 10px;pointer-events:none;transition:.25s}
+body:not(.embed) #mode{display:none}
+body.live #mode{color:var(--mint);border-color:rgba(141,235,210,.4)}
+
 /* embed mode: the same page, framed inside the portfolio */
 body.embed #bar{display:none}
 body.embed #panel{top:12px;left:12px;max-height:calc(100% - 24px)}
@@ -98,6 +105,8 @@ body.embed #load .note{font-size:.66rem}
   <div id="layers"></div>
   <div id="hint">drag · orbit<br>scroll · zoom<br>right-drag · pan<br>press R · reset view</div>
 </div>
+
+<div id="mode">scroll passes through &middot; click to take control</div>
 
 <div id="load">
   <div class="lbl" id="loadLbl">loading layout…</div>
@@ -152,6 +161,41 @@ scene.add(key, fill);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.09;
+
+/* ---------- scroll etiquette when embedded ----------------------------
+   Inside the portfolio the page has to stay scrollable. OrbitControls
+   would otherwise eat the wheel and, worse, set touch-action:none on the
+   canvas so a finger drag never scrolls either. So while the viewer is
+   dormant: zoom off (three.js then lets the wheel bubble untouched) and
+   one-finger touch handed back to the page. A click wakes it up.      */
+let live = !EMBED;
+if (EMBED) {
+  controls.enableZoom = false;
+  controls.touches = { ONE: null, TWO: THREE.TOUCH.DOLLY_ROTATE };
+  renderer.domElement.style.touchAction = 'pan-y';
+}
+
+function setLive(on){
+  if (!EMBED || on === live) return;
+  live = on;
+  controls.enableZoom = on;
+  controls.touches = on
+    ? { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN }
+    : { ONE: null, TWO: THREE.TOUCH.DOLLY_ROTATE };
+  renderer.domElement.style.touchAction = on ? 'none' : 'pan-y';
+  document.body.classList.toggle('live', on);
+  const m = document.getElementById('mode');
+  if (m) m.textContent = on
+    ? 'interactive \u2014 scroll to zoom \u00b7 Esc or move away to release'
+    : 'scroll passes through \u00b7 click to take control';
+}
+
+if (EMBED) {
+  renderer.domElement.addEventListener('pointerdown', () => setLive(true));
+  document.addEventListener('pointerleave', () => setLive(false));
+  addEventListener('blur', () => setLive(false));
+  addEventListener('keydown', e => { if (e.key === 'Escape') setLive(false); });
+}
 
 let needsRender = true;
 const invalidate = () => { needsRender = true; };
