@@ -51,6 +51,10 @@ a{color:inherit;text-decoration:none}
 .status{display:flex;align-items:stretch;margin-left:auto}
 .status span{display:flex;align-items:center;padding:0 11px;
   border-left:1px solid var(--line);white-space:nowrap}
+#coachBtn{border:0;border-left:1px solid var(--line);background:transparent;
+  color:var(--dim);font-family:var(--mono);font-size:12px;font-weight:700;
+  padding:0 13px;cursor:pointer;transition:.15s}
+#coachBtn:hover{background:var(--violet);color:#1a1830}
 @media(max-width:900px){
   #barTitle{display:none}
   .ws a i{margin:0}
@@ -214,6 +218,32 @@ body.has-max{overflow:hidden}
 #taskbar button.all{border-color:var(--violet-2);color:var(--violet)}
 @media(max-width:900px){#taskbar{left:0}}
 
+/* ===== silicon: viewer beside its explanation ===== */
+.gds-grid{display:grid;grid-template-columns:1.45fr 1fr;
+  border-top:1px solid var(--line)}
+@media(max-width:1000px){.gds-grid{grid-template-columns:1fr}}
+.gds-grid .viewer{aspect-ratio:auto;height:440px;border-right:1px solid var(--line)}
+@media(max-width:1000px){.gds-grid .viewer{height:340px;border-right:0;
+  border-bottom:1px solid var(--line)}}
+.gds-side{padding:20px 22px 24px;overflow-y:auto;max-height:440px}
+@media(max-width:1000px){.gds-side{max-height:none;overflow:visible}}
+.gds-side h4{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--violet);font-weight:500;margin-bottom:10px}
+.gds-side h4:not(:first-child){margin-top:22px}
+.gds-side p{font-family:var(--sans);font-weight:300;font-size:.9rem;line-height:1.72;
+  color:var(--grey);margin-bottom:12px}
+.stackup div{display:grid;grid-template-columns:118px 1fr;gap:10px;
+  font-size:11.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+.stackup div:last-child{border-bottom:0}
+.stackup span:last-child{color:var(--grey)}
+.tinynote{font-size:.84rem!important;color:var(--dim)!important;margin-top:10px}
+.gds-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:2px;margin-top:18px;overflow:hidden}
+.gds-stats div{background:var(--pane);padding:11px 13px}
+.gds-stats b{display:block;font-family:var(--mono);color:var(--violet);
+  font-size:15px;font-weight:700;line-height:1.3}
+.gds-stats span{font-size:11px;color:var(--dim)}
+
 /* ===== ls -la listing ===== */
 .ls{width:100%;font-size:12.5px;border-collapse:collapse}
 .ls .total{color:var(--dim);padding-bottom:9px;display:block}
@@ -318,6 +348,7 @@ kbd{background:var(--hl);border:1px solid var(--line-2);border-radius:2px;
     <span class="opt mint">● open to internships</span>
     <span class="opt dim">MYT</span>
     <span id="clk" class="wht">--:--:--</span>
+    <button id="coachBtn" type="button" title="how these windows work" aria-label="how these windows work">?</button>
   </div>
 </div>
 
@@ -535,18 +566,52 @@ kbd{background:var(--hl);border:1px solid var(--line-2);border-radius:2px;
         <span class="cmdline">$ ./gdsview --pdk sky130A silicon/top.gds</span>
       <span class="pid">ws 3</span>
     </div>
-    <p class="pane-note" style="padding:14px 20px 0;margin:0 0 14px"><b>Silicon.</b> The RVBL-2 core after place-and-route — the real GDSII layout, rendered in 3D. Drag to orbit, toggle any of the 16 mask layers.</p>
-    <div class="viewer" id="viewer">
-      <iframe id="vframe" title="RVBL-2 sky130 GDSII layout viewer"></iframe>
-      <div class="viewer-poster" id="vposter">
-        <div class="vp-inner">
-          <span class="t">silicon/top.gds</span>
-          <span class="dim">11 MB · WebGL · 16 mask layers · 274,009 cells</span><br>
-          <span class="dim">drag to orbit · scroll to zoom · toggle layers</span><br>
-          <button class="btn" id="vload" type="button">./gdsview top.gds</button>
+    <p class="pane-note" style="padding:16px 20px 0;margin:0 0 16px">
+      <b>Silicon.</b> The RVBL-2 core after place-and-route &mdash; the real GDSII layout
+      that came out of the flow, rendered in 3D.</p>
+
+    <div class="gds-grid">
+      <div class="viewer" id="viewer">
+        <iframe id="vframe" title="RVBL-2 sky130 GDSII layout viewer"></iframe>
+        <div class="viewer-poster" id="vposter">
+          <div class="vp-inner">
+            <span class="t">silicon/top.gds</span>
+            <span class="dim">11 MB &middot; WebGL &middot; 16 mask layers</span><br>
+            <button class="btn" id="vload" type="button">./gdsview top.gds</button>
+          </div>
         </div>
       </div>
+
+      <aside class="gds-side">
+        <h4>What you're looking at</h4>
+        <p>This is the same processor as the README above, but after synthesis and
+        place-and-route &mdash; every logic gate resolved into physical rectangles of
+        metal, polysilicon and diffusion on a sky130 die roughly a millimetre across.</p>
+        <p>The dense field is the standard-cell rows: 274,009 placed instances drawn
+        from 1,277 distinct cells, each one an adder, a multiplexer, a flip-flop. The
+        wide tracks running over the top are the routing layers carrying signal and
+        power between them.</p>
+
+        <h4>The stack-up</h4>
+        <div class="stackup">
+          <div><span class="dim">met5 &hellip; met1</span><span>routing, power distribution</span></div>
+          <div><span class="dim">via4 &hellip; via</span><span>vertical links between metals</span></div>
+          <div><span class="dim">li1 · mcon</span><span>local interconnect</span></div>
+          <div><span class="dim">poly · licon</span><span>transistor gates and contacts</span></div>
+          <div><span class="dim">diff · nwell</span><span>the doped silicon itself</span></div>
+        </div>
+        <p class="tinynote">Toggle any layer in the panel inside the viewer to peel the
+        stack apart &mdash; hiding the metals exposes the cell rows underneath.</p>
+
+        <div class="gds-stats">
+          <div><b>274,009</b><span>placed instances</span></div>
+          <div><b>1,277</b><span>unique cells</span></div>
+          <div><b>16</b><span>mask layers</span></div>
+          <div><b>sky130A</b><span>open PDK</span></div>
+        </div>
+      </aside>
     </div>
+
     <div class="pane-bar foot">
       <span class="cmdline dim">RVBL-2 · RV32I_Zmmul_Xvbcrc · sky130 · OpenLane</span>
       <span class="pid"><a href="./layout.html" target="_blank" rel="noopener" class="vio">open in new tty ↗</a></span>
@@ -869,19 +934,34 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
   render();
 
 
-  /* ---- first-visit coach mark on the window controls ---- */
-  (function coach(){
-    const KEY='colinyap.wm.coach.v1';
-    let seen=false;
-    try{ seen=localStorage.getItem(KEY)==='1'; }catch(e){}
-    if(seen) return;
+  /* ---- coach mark on the window controls ----
+     Shown once on a first visit, and replayable any time from the ?
+     button in the status bar or `coach` in the shell.              */
+  const COACH_KEY='colinyap.wm.coach.v1';
+  let tip=null;
+
+  function coachSeen(){
+    try{ return localStorage.getItem(COACH_KEY)==='1'; }catch(e){ return false; }
+  }
+  function coachDismiss(){
+    try{ localStorage.setItem(COACH_KEY,'1'); }catch(e){}
+    document.querySelectorAll('.pane-ctl.hi').forEach(c=>c.classList.remove('hi'));
+    document.removeEventListener('keydown',coachKey,true);
+    if(tip){ const t=tip; tip=null; t.classList.add('out'); setTimeout(()=>t.remove(),320); }
+  }
+  function coachKey(e){ if(e.key==='Escape') coachDismiss(); }
+
+  function showCoach(force){
+    if(tip) return;                       // already on screen
+    if(!force && coachSeen()) return;
+    if(force){ try{ localStorage.removeItem(COACH_KEY); }catch(e){} }
 
     const host=panes.find(p=>!p.classList.contains('min')&&!p.classList.contains('closed'));
     if(!host) return;
     const ctl=host.querySelector('.pane-ctl');
     if(!ctl) return;
 
-    const tip=document.createElement('div');
+    tip=document.createElement('div');
     tip.className='coach';
     tip.setAttribute('role','note');
     tip.innerHTML='<b>These are real windows</b>'+
@@ -889,30 +969,24 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
       'to roll it up. Nothing is ever lost; hidden windows come back from the bar '+
       'along the bottom.</p><button type="button">Got it</button>';
 
-    function dismiss(){
-      try{ localStorage.setItem(KEY,'1'); }catch(e){}
-      ctl.classList.remove('hi');
-      tip.classList.add('out');
-      setTimeout(()=>tip.remove(),320);
-      document.removeEventListener('keydown',onKey,true);
-    }
-    function onKey(e){ if(e.key==='Escape') dismiss(); }
+    host.appendChild(tip);
+    ctl.classList.add('hi');
+    tip.querySelector('button').addEventListener('click',coachDismiss);
+    document.addEventListener('keydown',coachKey,true);
+    host.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
 
-    setTimeout(()=>{
-      if(!document.body.contains(host)) return;
-      host.appendChild(tip);
-      ctl.classList.add('hi');
-      tip.querySelector('button').addEventListener('click',dismiss);
-      document.addEventListener('keydown',onKey,true);
-      // any genuine interaction with a window control retires the hint
-      document.querySelectorAll('.pane-ctl').forEach(c=>
-        c.addEventListener('click',dismiss,{once:true}));
-      // and so does restoring something from the taskbar
-      bar.addEventListener('click',dismiss,{once:true});
-    }, 1100);
-  })();
+  // first visit only, after the boot log has finished printing
+  setTimeout(()=>showCoach(false),1100);
 
-  window.__wm={restoreAll(){panes.forEach(p=>p.classList.remove('closed','min'));render();}};
+  // replay control in the status bar
+  const helpBtn=document.getElementById('coachBtn');
+  if(helpBtn) helpBtn.addEventListener('click',()=>showCoach(true));
+
+  window.__wm={
+    restoreAll(){panes.forEach(p=>p.classList.remove('closed','min'));render();},
+    coach(){showCoach(true);}
+  };
 })();
 
 /* ---------- interactive shell ---------- */
@@ -970,7 +1044,8 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
              '<span class="vio">uname -a</span>        kernel string\n'+
              '<span class="vio">date</span>            local time\n'+
              '<span class="vio">clear</span>           clear the screen\n'+
-             '<span class="vio">restore</span>         un-hide every window'); break;
+             '<span class="vio">restore</span>         un-hide every window\n'+
+             '<span class="vio">coach</span>           replay the window tour'); break;
       case 'ls': {
         const d=DIRS[arg!==undefined?arg:''];
         if(d===undefined) echo('<span class="red">ls: cannot access \''+arg+'\': No such file or directory</span>');
@@ -1016,6 +1091,10 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
           echo('<span class="dim">rendering 274,009 cells…</span>');}
         break;
       case 'sudo': echo('<span class="red">colin is not in the sudoers file. This incident will be reported.</span>'); break;
+      case 'coach': case 'tutorial':
+        if(window.__wm){window.__wm.coach();
+          echo('<span class="dim">replaying the window tour — scroll up</span>');}
+        break;
       case 'restore': case 'wm':
         if(window.__wm){window.__wm.restoreAll();echo('<span class="dim">all windows restored</span>');}
         break;
@@ -1048,4 +1127,3 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 </script>
 </body>
 </html>
-
