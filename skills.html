@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skills — Colin Yap</title>
+<meta name="description" content="Chip design, embedded hardware and software tools Colin Yap works with.">
+<meta property="og:title" content="Skills — Colin Yap">
+<meta property="og:description" content="Chip design, embedded hardware and software tools Colin Yap works with.">
+<meta property="og:url" content="https://colinyap.com/skills.html">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#21232f">
+<link rel="canonical" href="https://colinyap.com/skills.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<div id="bar">
+  <a class="brand" href="./index.html">colin<b>_</b>yap</a>
+  <nav id="ws" aria-label="pages">
+    <a href="./index.html"><i>1</i>Home</a>
+    <a href="./projects.html"><i>2</i>Projects</a>
+    <a href="./silicon.html"><i>3</i>Silicon</a>
+    <a href="./skills.html" class="active"><i>4</i>Skills</a>
+    <a href="./certificates.html"><i>5</i>Certificates</a>
+    <a href="./contact.html"><i>6</i>Contact</a>
+  </nav>
+  <div class="barEnd">
+    <span>● Open to internships</span>
+    <button id="coachBtn" type="button" title="how this page works"
+            aria-label="how this page works">?</button>
+  </div>
+</div>
+
+<main>
+
+  <section class="win" id="skills">
+    <div class="win-bar">
+      <span class="dots"><i></i><i></i><i></i></span>
+      <span class="win-title">Skills</span>
+      <span class="win-cmd">cat stack.conf</span>
+    </div>
+    <div class="win-body">
+      <p class="lead"><b>Skills.</b> The tools and languages I actually work in, grouped by
+      area.</p>
+      <div class="conf">
+        <span class="sect">[chip_design]</span>
+        <div class="kv"><span class="k">languages</span><span class="v">Verilog HDL</span></div>
+        <div class="kv"><span class="k">architecture</span><span class="v">RISC-V, RV32I, state machines, datapaths</span></div>
+        <div class="kv"><span class="k">verification</span><span class="v">self-checking testbenches, regression</span></div>
+        <div class="kv"><span class="k">tools</span><span class="v">OpenLane, sky130 PDK</span></div>
+        <div class="kv"><span class="k">fpga</span><span class="v">Tang Nano 9K</span></div>
+
+        <span class="sect">[embedded_and_hardware]</span>
+        <div class="kv"><span class="k">boards</span><span class="v">ESP32, Arduino, Raspberry Pi</span></div>
+        <div class="kv"><span class="k">languages</span><span class="v">C, C++</span></div>
+        <div class="kv"><span class="k">control</span><span class="v">motors, servos, sensors, PID</span></div>
+        <div class="kv"><span class="k">circuit_boards</span><span class="v">KiCad, schematic and layout</span></div>
+        <div class="kv"><span class="k">mechanical</span><span class="v">Autodesk Inventor, 3D printing</span></div>
+
+        <span class="sect">[software_and_other]</span>
+        <div class="kv"><span class="k">python</span><span class="v">OpenCV, YOLO, multiprocessing</span></div>
+        <div class="kv"><span class="k">tooling</span><span class="v">Git, GitHub, technical writing</span></div>
+        <div class="kv"><span class="k">teaching</span><span class="v">STEM tutoring, ages 7-17</span></div>
+        <div class="kv"><span class="k">languages_spoken</span><span class="v">English, 中文, Bahasa Malaysia</span></div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="pagenav" aria-label="previous and next page">
+    <a class="prev" href="./silicon.html"><small>← previous</small><b>Silicon</b></a>
+    <a class="next" href="./certificates.html"><small>next →</small><b>Certificates</b></a>
+  </nav>
+
+  <p class="kbdhint">press <kbd>1</kbd>&ndash;<kbd>6</kbd> to jump between pages</p>
+
+  <p class="foot">Colin Yap Ren Feng · Selangor, Malaysia · 2026 ·
+    <a href="https://github.com/colinyap" target="_blank" rel="noopener">github</a> ·
+    <a href="https://linkedin.com/in/colin-yap" target="_blank" rel="noopener">linkedin</a></p>
+
+</main>
+
+<div id="taskbar" role="region" aria-label="hidden windows"></div>
+
+<script src="./app.js"></script>
+</body>
+</html>

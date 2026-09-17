@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects — Colin Yap</title>
+<meta name="description" content="Seven engineering projects: a RISC-V processor, a wireless robotic hand, Verilog designs, robotics and PCB work.">
+<meta property="og:title" content="Projects — Colin Yap">
+<meta property="og:description" content="Seven engineering projects: a RISC-V processor, a wireless robotic hand, Verilog designs, robotics and PCB work.">
+<meta property="og:url" content="https://colinyap.com/projects.html">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#21232f">
+<link rel="canonical" href="https://colinyap.com/projects.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<div id="bar">
+  <a class="brand" href="./index.html">colin<b>_</b>yap</a>
+  <nav id="ws" aria-label="pages">
+    <a href="./index.html"><i>1</i>Home</a>
+    <a href="./projects.html" class="active"><i>2</i>Projects</a>
+    <a href="./silicon.html"><i>3</i>Silicon</a>
+    <a href="./skills.html"><i>4</i>Skills</a>
+    <a href="./certificates.html"><i>5</i>Certificates</a>
+    <a href="./contact.html"><i>6</i>Contact</a>
+  </nav>
+  <div class="barEnd">
+    <span>● Open to internships</span>
+    <button id="coachBtn" type="button" title="how this page works"
+            aria-label="how this page works">?</button>
+  </div>
+</div>
+
+<main>
+
+  <section class="win" id="projects">
+    <div class="win-bar">
+      <span class="dots"><i></i><i></i><i></i></span>
+      <span class="win-title">Projects</span>
+      <span class="win-cmd">ls ~/projects</span>
+    </div>
+    <div class="win-body">
+      <p class="lead"><b>Projects.</b> Seven things I've built end to end. Every name links
+      to its full source code on GitHub.</p>
+
+      <div class="feat">
+        <div class="tagline">Main project</div>
+        <h3>RVBL-2 — a RISC-V processor</h3>
+        <p>A working 32-bit processor written from scratch in Verilog. On top of the base
+        RISC-V instruction set I implemented two extensions in hardware: <b>Zmmul</b> for
+        multiplication and <b>Xvbcrc</b>, a custom instruction for computing CRC checksums.
+        I verified it with self-checking testbenches, then ran it through synthesis and
+        place-and-route to produce a real chip layout. Built for Phase 2 of the VombrenLabs
+        ChampionCHIP competition.</p>
+        <dl class="spec">
+          <dt>instruction set</dt><dd>RV32I + Zmmul + Xvbcrc</dd>
+          <dt>design</dt><dd>multicycle, 4-state control FSM</dd>
+          <dt>toolchain</dt><dd>OpenLane 1.1.1, sky130A open PDK</dd>
+          <dt>result</dt><dd>274,009 standard cells placed</dd>
+        </dl>
+        <a class="arrow" href="./silicon.html">Look at the finished chip in 3D →</a>
+      </div>
+
+      <ul class="plist">
+        <li>
+          <span class="nm"><a href="https://github.com/colinyap/Robotic-Hand-with-Wireless-Glove-Controller" target="_blank" rel="noopener">Wireless robotic hand ↗</a></span>
+          <span class="ds">A robotic hand controlled by a wearable glove. Flex sensors read
+          your finger bend, an ESP32 sends it over Bluetooth, and an Arduino Mega drives the
+          hand. Shown at my university's innovation showcase.</span>
+        </li>
+        <li>
+          <span class="nm"><a href="https://github.com/colinyap/Verilog-MIni-Projects" target="_blank" rel="noopener">Verilog project library ↗</a></span>
+          <span class="ds">Digital circuits I built while learning hardware design, up to a
+          working serial port and a CPU cache, each with its own test suite.</span>
+        </li>
+        <li>
+          <span class="nm"><a href="https://github.com/colinyap/Optimisation-skills-for-IC-design-and-RISC-V-design" target="_blank" rel="noopener">Chip design toolkits ↗</a></span>
+          <span class="ds">Two reusable skills I wrote so AI coding agents can help with chip
+          work — one for processor design, one for optimising a layout's power, performance
+          and area.</span>
+        </li>
+        <li>
+          <span class="nm"><a href="https://github.com/colinyap/Rasp-pi-controlled-robot-car" target="_blank" rel="noopener">Line-following car, Raspberry Pi ↗</a></span>
+          <span class="ds">A robot car that follows a line using PID control, with camera-based
+          object detection layered on top using OpenCV and YOLO.</span>
+        </li>
+        <li>
+          <span class="nm"><a href="https://github.com/colinyap/PCB-Business-Card" target="_blank" rel="noopener">PCB business card ↗</a></span>
+          <span class="ds">A business card that's an actual circuit board — designed from
+          schematic through to board layout, with my details etched into the copper.</span>
+        </li>
+        <li>
+          <span class="nm"><a href="https://github.com/colinyap/EEEE_1027-Project" target="_blank" rel="noopener">Line-following car, Arduino ↗</a></span>
+          <span class="ds">My first-year embedded coursework build in C++ — the project that
+          got me into hardware in the first place.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <nav class="pagenav" aria-label="previous and next page">
+    <a class="prev" href="./index.html"><small>← previous</small><b>Home</b></a>
+    <a class="next" href="./silicon.html"><small>next →</small><b>Silicon</b></a>
+  </nav>
+
+  <p class="kbdhint">press <kbd>1</kbd>&ndash;<kbd>6</kbd> to jump between pages</p>
+
+  <p class="foot">Colin Yap Ren Feng · Selangor, Malaysia · 2026 ·
+    <a href="https://github.com/colinyap" target="_blank" rel="noopener">github</a> ·
+    <a href="https://linkedin.com/in/colin-yap" target="_blank" rel="noopener">linkedin</a></p>
+
+</main>
+
+<div id="taskbar" role="region" aria-label="hidden windows"></div>
+
+<script src="./app.js"></script>
+</body>
+</html>

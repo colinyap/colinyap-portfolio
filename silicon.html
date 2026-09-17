@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Silicon — Colin Yap</title>
+<meta name="description" content="The RVBL-2 RISC-V processor as a manufacturable chip layout, rendered in 3D.">
+<meta property="og:title" content="Silicon — Colin Yap">
+<meta property="og:description" content="The RVBL-2 RISC-V processor as a manufacturable chip layout, rendered in 3D.">
+<meta property="og:url" content="https://colinyap.com/silicon.html">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#21232f">
+<link rel="canonical" href="https://colinyap.com/silicon.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<div id="bar">
+  <a class="brand" href="./index.html">colin<b>_</b>yap</a>
+  <nav id="ws" aria-label="pages">
+    <a href="./index.html"><i>1</i>Home</a>
+    <a href="./projects.html"><i>2</i>Projects</a>
+    <a href="./silicon.html" class="active"><i>3</i>Silicon</a>
+    <a href="./skills.html"><i>4</i>Skills</a>
+    <a href="./certificates.html"><i>5</i>Certificates</a>
+    <a href="./contact.html"><i>6</i>Contact</a>
+  </nav>
+  <div class="barEnd">
+    <span>● Open to internships</span>
+    <button id="coachBtn" type="button" title="how this page works"
+            aria-label="how this page works">?</button>
+  </div>
+</div>
+
+<main>
+
+  <section class="win" id="silicon">
+    <div class="win-bar">
+      <span class="dots"><i></i><i></i><i></i></span>
+      <span class="win-title">Silicon</span>
+      <span class="win-cmd">./gdsview top.gds</span>
+    </div>
+    <div class="win-body" style="padding-bottom:20px">
+      <p class="lead" style="margin-bottom:0;padding-bottom:0;border:0"><b>Silicon.</b>
+      The processor above, turned into an actual chip layout — and rendered here in 3D so
+      you can spin it around.</p>
+    </div>
+
+    <div class="gds-grid">
+      <div class="viewer" id="viewer">
+        <iframe id="vframe" title="RVBL-2 chip layout viewer"></iframe>
+        <div class="viewer-poster" id="vposter">
+          <div class="vp-inner">
+            <span class="t">RVBL-2 chip layout</span>
+            <span class="s">11 MB · loads in your browser</span>
+            <button class="btn" id="vload" type="button">Load the 3D view</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="gds-side">
+        <h4>What you're looking at</h4>
+        <p>This is the processor after every logic gate has been turned into physical
+        shapes — metal, silicon and the wiring between them — on a chip about a millimetre
+        across. It's the file a factory would need to actually manufacture it.</p>
+        <p>The dense carpet is 274,009 tiny building blocks: adders, memory bits, switches.
+        The wide tracks running over the top are the wires connecting them.</p>
+
+        <h4>The layers</h4>
+        <div class="stackup">
+          <div><span class="dim">met5 … met1</span><span>wiring and power</span></div>
+          <div><span class="dim">via4 … via</span><span>vertical links between wires</span></div>
+          <div><span class="dim">li1 · mcon</span><span>local connections</span></div>
+          <div><span class="dim">poly · licon</span><span>transistor gates</span></div>
+          <div><span class="dim">diff · nwell</span><span>the silicon itself</span></div>
+        </div>
+        <p style="margin-top:12px;font-size:.87rem;color:var(--dim)">Turn layers off in the
+        viewer's panel to peel the chip apart — hiding the wiring reveals the rows of
+        building blocks underneath.</p>
+      </aside>
+    </div>
+
+    <div class="win-body win-foot" style="padding-top:16px;border-top:1px solid var(--line)">
+      <a class="arrow" href="./layout.html" target="_blank" rel="noopener">Open the viewer full screen ↗</a>
+    </div>
+  </section>
+
+  <nav class="pagenav" aria-label="previous and next page">
+    <a class="prev" href="./projects.html"><small>← previous</small><b>Projects</b></a>
+    <a class="next" href="./skills.html"><small>next →</small><b>Skills</b></a>
+  </nav>
+
+  <p class="kbdhint">press <kbd>1</kbd>&ndash;<kbd>6</kbd> to jump between pages</p>
+
+  <p class="foot">Colin Yap Ren Feng · Selangor, Malaysia · 2026 ·
+    <a href="https://github.com/colinyap" target="_blank" rel="noopener">github</a> ·
+    <a href="https://linkedin.com/in/colin-yap" target="_blank" rel="noopener">linkedin</a></p>
+
+</main>
+
+<div id="taskbar" role="region" aria-label="hidden windows"></div>
+
+<script src="./app.js"></script>
+</body>
+</html>
